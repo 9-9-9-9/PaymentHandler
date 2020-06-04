@@ -11,6 +11,12 @@ namespace PaymentHandler.Controllers
     [Route("api")]
     public class ApiController : ControllerBase
     {
+        [Route("test")]
+        public IActionResult Test()
+        {
+            return Ok($"{Request.Method} OK");
+        }
+        
         [Route("notify_url")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> NotifyHandler([FromForm] IFormCollection value)
