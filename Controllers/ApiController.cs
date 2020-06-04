@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PaymentHandler.Controllers
@@ -11,7 +12,8 @@ namespace PaymentHandler.Controllers
     public class ApiController : ControllerBase
     {
         [Route("notify_url")]
-        public async Task<IActionResult> NotifyHandler(string raw)
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> NotifyHandler([FromForm] IFormCollection value)
         {
             var sb = new StringBuilder();
 
@@ -64,6 +66,19 @@ namespace PaymentHandler.Controllers
             {
                 Console.Error.WriteLine(e);
                 sb.AppendLine($"<read failure: {e.Message}>");
+            }
+
+            sb.AppendLine("******* RAW Body:");
+
+            foreach (var vl in value)
+            {
+                sb.AppendLine("***");
+                sb.AppendLine(vl.Key);
+                sb.AppendLine("=>");
+                foreach (var v in vl.Value)
+                {
+                    sb.AppendLine(v);
+                }
             }
 
             Console.WriteLine(sb.ToString());
